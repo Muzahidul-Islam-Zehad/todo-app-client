@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { format } from "date-fns";
 import { FaHourglassStart } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../Providers/AuthProvider/AuthProvider";
 
 const AddTask = () => {
     const axiosPublic = useAxiosPublic();
@@ -16,6 +17,7 @@ const AddTask = () => {
     });
     const [titleLen, setTitlelen] = useState(0);
     const [desLen, setDeslen] = useState(0);
+    const {user} = useContext(AuthContext);
 
     const handleChange = (e) => {
         setTask({ ...task, [e.target.name]: e.target.value });
@@ -30,9 +32,10 @@ const AddTask = () => {
         const category = form.category.value;
         const dueDate = format(new Date(form.dueDate.value), "PP");
         const priority = form.priority.value;
+        const email = user?.email;
 
 
-        const addTaskData = { title, description, category, dueDate, priority };
+        const addTaskData = { title, description, category, dueDate, priority, email };
 
         try {
             const { data } = await axiosPublic.post('/tasks', addTaskData);

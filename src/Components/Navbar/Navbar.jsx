@@ -1,9 +1,25 @@
+import { useContext } from "react";
 import { GoHome } from "react-icons/go";
 import { MdOutlineAddTask } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
+import { AuthContext } from "../../Providers/AuthProvider/AuthProvider";
 
 const Navbar = () => {
     const {pathname} = useLocation();
+    const {user,userSignOut} = useContext(AuthContext);
+
+
+    const handleSignOut = async() =>{
+
+        try{
+            await userSignOut();
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+    }
+
     return (
         <div className="bg-[#7B2CBF] shadow-md">
             <div className="navbar w-11/12 mx-auto py-2">
@@ -21,8 +37,8 @@ const Navbar = () => {
                         className="input input-bordered w-24 md:w-40 bg-[#00A6FB] text-white placeholder-white border-none focus:ring-2 focus:ring-[#FF006E] transition-all"
                     /> */}
                     <ul className="flex items-center text-white">
-                        <NavLink to={'/'} className={` border-b-2 rounded-l-lg rounded-r-lg px-1 ${pathname === '/' ? `hidden`: `block`}`}><div className=" flex gap-1 items-center text-lg"><span><GoHome /></span> <p>Home</p></div></NavLink>
-                        <NavLink to={'/add-task'} className={`border-b-2 rounded-l-lg rounded-r-lg px-1 ${pathname === '/add-task' ? `hidden`: `block`}`}><div className="flex gap-1 items-center text-lg"><span><MdOutlineAddTask /></span> <p> Add Task</p></div></NavLink>
+                        <NavLink to={'/todo'} className={` border-b-2 rounded-l-lg rounded-r-lg px-1  ${pathname === '/todo' ? `hidden`: `block`}`}><div className=" flex gap-1 items-center text-xs md:text-lg"><span><GoHome /></span> <p>Home</p></div></NavLink>
+                        <NavLink to={'/todo/add-task'} className={`border-b-2 rounded-l-lg rounded-r-lg px-1 ${pathname === '/todo/add-task' ? `hidden`: `block`}`}><div className="flex gap-1 items-center text-xs md:text-lg"><span><MdOutlineAddTask /></span> <p> Add Task</p></div></NavLink>
                     </ul>
 
                     {/* Profile Dropdown */}
@@ -35,7 +51,8 @@ const Navbar = () => {
                             <div className="w-10 rounded-full">
                                 <img
                                     alt="Profile"
-                                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                    src={user?.photoURL}
+                                    referrerPolicy="no-referrer"
                                 />
                             </div>
                         </div>
@@ -45,7 +62,7 @@ const Navbar = () => {
                             tabIndex={0}
                             className="menu menu-sm dropdown-content mt-3 w-52 p-2 shadow bg-[#E6E6FA] text-[#121212] rounded-box z-10"
                         >
-                            <li>
+                            {/* <li>
                                 <a className="hover:bg-[#FF006E] hover:text-white transition-all">
                                     Profile
                                 </a>
@@ -54,9 +71,9 @@ const Navbar = () => {
                                 <a className="hover:bg-[#FF006E] hover:text-white transition-all">
                                     Settings
                                 </a>
-                            </li>
-                            <li>
-                                <a className="hover:bg-[#FF006E] hover:text-white transition-all">
+                            </li> */}
+                            <li className="">
+                                <a onClick={handleSignOut} className="hover:bg-[#FF006E] hover:text-white transition-all">
                                     Logout
                                 </a>
                             </li>
