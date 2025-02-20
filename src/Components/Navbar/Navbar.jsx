@@ -21,8 +21,8 @@ const Navbar = () => {
                         className="input input-bordered w-24 md:w-40 bg-[#00A6FB] text-white placeholder-white border-none focus:ring-2 focus:ring-[#FF006E] transition-all"
                     /> */}
                     <ul className="flex items-center text-white">
-                        <NavLink to={'/'} className={` ${pathname === '/' ? `hidden`: `block`}`}><div className="flex gap-1 items-center text-lg"><span><GoHome /></span> <p>Home</p></div></NavLink>
-                        <NavLink to={'/add-task'} className={`${pathname === '/add-task' ? `hidden`: `block`}`}><div className="flex gap-1 items-center text-lg"><span><MdOutlineAddTask /></span> <p>Add Task</p></div></NavLink>
+                        <NavLink to={'/'} className={` border-b-2 rounded-l-lg rounded-r-lg px-1 ${pathname === '/' ? `hidden`: `block`}`}><div className=" flex gap-1 items-center text-lg"><span><GoHome /></span> <p>Home</p></div></NavLink>
+                        <NavLink to={'/add-task'} className={`border-b-2 rounded-l-lg rounded-r-lg px-1 ${pathname === '/add-task' ? `hidden`: `block`}`}><div className="flex gap-1 items-center text-lg"><span><MdOutlineAddTask /></span> <p> Add Task</p></div></NavLink>
                     </ul>
 
                     {/* Profile Dropdown */}

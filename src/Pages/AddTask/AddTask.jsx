@@ -1,9 +1,12 @@
 import { useState } from "react";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { format } from "date-fns";
+import { FaHourglassStart } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const AddTask = () => {
     const axiosPublic = useAxiosPublic();
+    const [loading, setLoading] = useState(false);
     const [task, setTask] = useState({
         title: "",
         description: "",
@@ -19,28 +22,51 @@ const AddTask = () => {
     };
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         const form = e.target;
         const title = form.title.value;
         const description = form.description.value;
         const category = form.category.value;
-        const dueDate = format(new Date(form.dueDate.value), "PP") ;
+        const dueDate = format(new Date(form.dueDate.value), "PP");
         const priority = form.priority.value;
 
 
         const addTaskData = { title, description, category, dueDate, priority };
 
-        try{
-            const {data} = await axiosPublic.post('/tasks', addTaskData);
+        try {
+            const { data } = await axiosPublic.post('/tasks', addTaskData);
             console.log(data);
+            Swal.fire({
+                title: "Task Added 😍",
+                text: "Your Task Has Been Added.",
+                icon: "success"
+            });
+            setTask({
+                title: "",
+                description: "",
+                category: "To-Do",
+                dueDate: "",
+                priority: "Medium",
+            })
         }
-        catch(err)
-        {
+        catch (err) {
             console.log(err);
+
+            Swal.fire({
+                title: "Something Went Wrong!🙁",
+                text: "Please try again leter",
+                icon: "error"
+            });
+        }
+        finally {
+            // form.reset();
+
+            setLoading(false);
         }
 
         // console.log(addTaskData);
-        
+
     }
 
     // console.log(titleLen);
@@ -112,8 +138,13 @@ const AddTask = () => {
                     </select>
 
                     {/* Submit Button */}
-                    <button type="submit" className="w-full py-2 mt-3 bg-[#007BFF] text-white font-bold rounded-lg hover:bg-[#00A6FB] transition-all">
-                        Add Task
+                    <button type="submit" disabled={loading} className="w-full btn bg-[#007BFF]  text-white font-bold rounded-lg hover:bg-[#00A6FB] transition-all">
+                        {
+                            loading ? <span className={`animate-spin`}><FaHourglassStart /></span>
+                                :
+                                `Add Task`
+                        }
+
                     </button>
                 </form>
 
@@ -123,7 +154,7 @@ const AddTask = () => {
                     <div className="p-4 bg-[#00A6FB] text-white rounded-lg shadow-md">
                         <h3 className="text-lg font-bold">{task.title || "Task Title Here"}</h3>
                         <p className="text-sm mb-2">{task.description || "Task description preview..."}</p>
-                        <p className="text-xs">📅 Due: {task.dueDate  ? format(new Date(task?.dueDate), "PP") : "Not set"}</p>
+                        <p className="text-xs">📅 Due: {task.dueDate ? format(new Date(task?.dueDate), "PP") : "Not set"}</p>
                         <p className="text-xs">🏷️ Category: {task.category}</p>
                         <p className="text-xs">🔥 Priority: {task.priority}</p>
                     </div>
