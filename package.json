@@ -12,6 +12,8 @@
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@tailwindcss/vite": "^4.0.7",
+    "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
     "localforage": "^1.10.0",
     "match-sorter": "^8.0.0",
     "react": "^19.0.0",
