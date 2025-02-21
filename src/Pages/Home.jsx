@@ -31,7 +31,7 @@ const Home = () => {
 
 
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:8080");
+        const ws = new WebSocket(`${import.meta.env.VITE_baseURL_ws}`);
 
         ws.onopen = () => {
             console.log("connected to web socket");
