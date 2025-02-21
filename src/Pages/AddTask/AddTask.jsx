@@ -38,8 +38,8 @@ const AddTask = () => {
         const addTaskData = { title, description, category, dueDate, priority, email };
 
         try {
-            const { data } = await axiosPublic.post('/tasks', addTaskData);
-            console.log(data);
+            await axiosPublic.post('/tasks', addTaskData);
+           // console.log(data);
             Swal.fire({
                 title: "Task Added 😍",
                 text: "Your Task Has Been Added.",

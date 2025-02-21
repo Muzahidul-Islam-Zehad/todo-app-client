@@ -28,7 +28,7 @@ const AuthProvider = ({children}) => {
         return () => unSubscribe();
     },[]);
 
-    console.log(user, isLoading);
+   // console.log(user, isLoading);
 
     const googleSignIn = () =>{
         setIsloading(true);

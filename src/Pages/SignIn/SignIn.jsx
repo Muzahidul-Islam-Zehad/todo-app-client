@@ -11,7 +11,7 @@ const SignIn = () => {
     const axiosPublic = useAxiosPublic();
 
     const handleGoogleSignIn = async () => {
-        console.log("Google Sign-In Clicked");
+       // console.log("Google Sign-In Clicked");
         // Implement Google sign-in logic here
 
         try {
@@ -21,8 +21,8 @@ const SignIn = () => {
                 email : user.email
             }
 
-            const {data} = await axiosPublic.post('/user', userData);
-            console.log(data);
+            await axiosPublic.post('/user', userData);
+           // console.log(data);
 
             navigate('/todo');
 

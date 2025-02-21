@@ -136,7 +136,7 @@ const Home = () => {
     };
 
     const handleUpdate = (task) => {
-        console.log("Update Task:", task);
+        //console.log("Update Task:", task);
         // Here, you can open a modal or navigate to an update page
         modalRef.current?.showModal();
 
@@ -160,7 +160,7 @@ const Home = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('submit the form');
+       // console.log('submit the form');
 
         setLoading(true);
         e.preventDefault();
