@@ -18,6 +18,8 @@ const Home = () => {
     const [desLen, setDeslen] = useState(0);
     const [loading, setLoading] = useState(false);
     const [taskID, setTaskID] = useState(null);
+    // eslint-disable-next-line no-unused-vars
+    // const [socket, setSocket] = useState(null);
 
     const { data = [], isLoading } = useQuery({
         queryKey: ['tasks'],
@@ -26,6 +28,33 @@ const Home = () => {
             return response.data || [];
         }
     });
+
+
+    useEffect(() => {
+        const ws = new WebSocket("ws://localhost:8080");
+
+        ws.onopen = () => {
+            console.log("connected to web socket");
+        }
+
+        ws.onmessage = (e) => {
+            // console.log('task update recieved: ' , e.data);
+            if (e.data) {
+                queryClient.invalidateQueries(["tasks"]);
+            }
+        }
+
+        ws.onclose = () => {
+            console.log('disconnected from web socket');
+        }
+        // setSocket(ws);
+
+        return () => {
+            ws.close();
+        }
+
+    }, [queryClient])
+
     const [task, setTask] = useState({
         title: "",
         description: "",
@@ -129,7 +158,7 @@ const Home = () => {
         setTask({ ...task, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('submit the form');
 
@@ -159,7 +188,7 @@ const Home = () => {
         } catch (error) {
             console.error("Error deleting task:", error);
         }
-        finally{
+        finally {
             setLoading(false);
         }
     }
