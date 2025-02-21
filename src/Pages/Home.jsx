@@ -212,7 +212,12 @@ const Home = () => {
                                     {...provided.droppableProps}
                                     className="bg-gray-100 p-6 rounded-xl shadow-md min-h-[350px] border border-gray-300"
                                 >
-                                    <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">{category}</h2>
+                                    <h2 className={`text-2xl font-semibold text-center mb-4 ${category === "To-Do"
+                                                            ? "text-blue-500 underline"
+                                                            : category === "In Progress"
+                                                                ? "text-yellow-500 underline"
+                                                                : "text-green-500 underline"
+                                                        }`}>{category}</h2>
                                     {tasks[category]?.map((task, index) => (
                                         <Draggable key={task._id} draggableId={task._id} index={index}>
                                             {(provided, snapshot) => (

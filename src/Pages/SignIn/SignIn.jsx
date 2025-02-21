@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 
 const SignIn = () => {
 
-    const { googleSignIn,} = useContext(AuthContext);
+    const { googleSignIn,setIsloading} = useContext(AuthContext);
     const navigate = useNavigate();
     const axiosPublic = useAxiosPublic();
 
@@ -31,7 +31,7 @@ const SignIn = () => {
             console.log(err);
         }
         finally {
-            // setIsLoading(false);
+            setIsloading(false);
         }
 
     };
