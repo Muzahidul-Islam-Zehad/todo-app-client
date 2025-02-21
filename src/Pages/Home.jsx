@@ -23,6 +23,7 @@ const Home = () => {
 
     const { data = [], isLoading } = useQuery({
         queryKey: ['tasks'],
+        enabled: !!user?.email,
         queryFn: async () => {
             const response = await axiosPublic.get(`/tasks?email=${user?.email}`);
             return response.data || [];
