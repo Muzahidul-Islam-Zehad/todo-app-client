@@ -22,7 +22,7 @@ const Home = () => {
     // const [socket, setSocket] = useState(null);
 
     const { data = [], isLoading } = useQuery({
-        queryKey: ['tasks'],
+        queryKey: ['tasks', user?.email],
         enabled: !!user?.email,
         queryFn: async () => {
             const response = await axiosPublic.get(`/tasks?email=${user?.email}`);
@@ -41,7 +41,7 @@ const Home = () => {
         ws.onmessage = (e) => {
             // console.log('task update recieved: ' , e.data);
             if (e.data) {
-                queryClient.invalidateQueries(["tasks"]);
+                queryClient.invalidateQueries(['tasks', user?.email]);
             }
         }
 
@@ -54,7 +54,7 @@ const Home = () => {
             ws.close();
         }
 
-    }, [queryClient])
+    }, [queryClient, user?.email])
 
     const [task, setTask] = useState({
         title: "",
@@ -102,7 +102,7 @@ const Home = () => {
 
         try {
             await axiosPublic.put(`/tasks/${draggedTask._id}`, { category: destination.droppableId });
-            queryClient.invalidateQueries(['tasks']);
+            queryClient.invalidateQueries(['tasks', user?.email]);
         } catch (error) {
             console.error("Error updating task:", error);
         }
@@ -121,7 +121,7 @@ const Home = () => {
             if (result.isConfirmed) {
                 try {
                     await axiosPublic.delete(`/tasks/${taskId}`);
-                    queryClient.invalidateQueries(['tasks']);
+                    queryClient.invalidateQueries(['tasks', user?.email]);
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your task has been deleted.",
@@ -161,7 +161,7 @@ const Home = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-       // console.log('submit the form');
+        // console.log('submit the form');
 
         setLoading(true);
         e.preventDefault();
@@ -179,7 +179,7 @@ const Home = () => {
 
         try {
             await axiosPublic.patch(`/tasks/${taskID}`, updateTaskData);
-            queryClient.invalidateQueries(['tasks']);
+            queryClient.invalidateQueries(['tasks', user?.email]);
             modalRef.current?.close();
             Swal.fire({
                 title: "Updated!",
@@ -188,6 +188,11 @@ const Home = () => {
             });
         } catch (error) {
             console.error("Error deleting task:", error);
+            Swal.fire({
+                title: "Something Went Wrong!🙁",
+                text: "Please try again leter",
+                icon: "error"
+            });
         }
         finally {
             setLoading(false);

@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { FaGoogle } from "react-icons/fa";
 import { AuthContext } from "../../Providers/AuthProvider/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import { FcGoogle } from "react-icons/fc";
 
 const SignIn = () => {
 
@@ -37,10 +37,10 @@ const SignIn = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#7B2CBF] to-[#00A6FB]">
+        <div className="flex justify-center items-center min-h-screen bg-[url(https://i.ibb.co.com/DfH0MpyC/19187761.jpg)] bg-cover">
             <div className="w-[450px] p-10 bg-white rounded-2xl shadow-2xl text-center">
                 {/* Logo & Branding */}
-                <h1 className="text-4xl font-extrabold text-[#7B2CBF]">TaskTrek</h1>
+                <h1 className="text-4xl font-extrabold text-[#7B2CBF]">Task<span className="text-[#ff71a5]">Trek</span></h1>
                 <p className="text-[#444] text-lg mt-2">
                     Organize your work efficiently, boost productivity.
                 </p>
@@ -52,9 +52,9 @@ const SignIn = () => {
                 {/* Google Sign-In Button */}
                 <button
                     onClick={handleGoogleSignIn}
-                    className="flex items-center justify-center gap-3 btn w-full bg-[#FF006E] text-white text-lg font-semibold rounded-lg shadow-md hover:bg-[#D90452] transition-all"
+                    className="flex items-center justify-center gap-3 btn w-full bg-[#7B2CBF] text-white text-lg font-semibold rounded-lg shadow-md hover:bg-[#ff71a5] transition-all"
                 >
-                    <FaGoogle className="text-2xl" />
+                    <FcGoogle  className="text-2xl" />
                     Continue with Google
                 </button>
 

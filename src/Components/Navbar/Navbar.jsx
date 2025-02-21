@@ -25,7 +25,7 @@ const Navbar = () => {
             <div className="navbar w-11/12 mx-auto py-2">
                 {/* Logo */}
                 <div className="flex-1">
-                    <a className="text-2xl font-bold text-white tracking-wide">TaskTrek</a>
+                    <a className="text-2xl font-bold text-white tracking-wide">Task<span className="text-[#ff71a5]">Trek</span></a>
                 </div>
 
                 {/* Search & Profile */}
@@ -46,7 +46,7 @@ const Navbar = () => {
                         <div
                             tabIndex={0}
                             role="button"
-                            className="btn btn-ghost btn-circle avatar border-2 border-[#FF006E] hover:border-[#00F5A0] transition-all"
+                            className="btn btn-ghost btn-circle avatar border-2 border-[#ff71a5] hover:border-[#00F5A0] transition-all"
                         >
                             <div className="w-10 rounded-full">
                                 <img
@@ -73,7 +73,7 @@ const Navbar = () => {
                                 </a>
                             </li> */}
                             <li className="">
-                                <a onClick={handleSignOut} className="hover:bg-[#FF006E] hover:text-white transition-all">
+                                <a onClick={handleSignOut} className="hover:bg-[#ff71a5] hover:text-white transition-all">
                                     Logout
                                 </a>
                             </li>

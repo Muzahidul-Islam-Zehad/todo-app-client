@@ -4,9 +4,11 @@ import { format } from "date-fns";
 import { FaHourglassStart } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Providers/AuthProvider/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const AddTask = () => {
     const axiosPublic = useAxiosPublic();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [task, setTask] = useState({
         title: "",
@@ -45,6 +47,7 @@ const AddTask = () => {
                 text: "Your Task Has Been Added.",
                 icon: "success"
             });
+            navigate('/todo');
             setTask({
                 title: "",
                 description: "",
