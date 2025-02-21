@@ -4,7 +4,9 @@ import Navbar from "../../Components/Navbar/Navbar";
 const MainLayout = () => {
     return (
         <div>
-            <Navbar></Navbar>
+            <div className="sticky top-0">
+                <Navbar></Navbar>
+            </div>
             <div className="min-h-screen">
                 <Outlet></Outlet>
             </div>
