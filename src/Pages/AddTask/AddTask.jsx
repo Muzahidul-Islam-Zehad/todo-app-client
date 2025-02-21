@@ -113,6 +113,7 @@ const AddTask = () => {
                     <label className="block text-[#7B2CBF] font-medium">Category</label>
                     <select
                         name="category"
+                        required
                         value={task.category}
                         onChange={handleChange}
                         className="select w-full mt-1 mb-3 bg-white border border-[#7B2CBF] focus:ring-2 focus:ring-[#007BFF]"
@@ -124,6 +125,7 @@ const AddTask = () => {
 
                     <label className="block text-[#7B2CBF] font-medium">Due Date</label>
                     <input
+                        required
                         type="date"
                         name="dueDate"
                         value={task.dueDate}
@@ -133,6 +135,7 @@ const AddTask = () => {
 
                     <label className="block text-[#7B2CBF] font-medium">Priority</label>
                     <select
+                        required
                         name="priority"
                         value={task.priority}
                         onChange={handleChange}
