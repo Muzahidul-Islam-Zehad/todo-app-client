@@ -6,23 +6,23 @@ import { FcGoogle } from "react-icons/fc";
 
 const SignIn = () => {
 
-    const { googleSignIn,setIsloading} = useContext(AuthContext);
+    const { googleSignIn, setIsloading } = useContext(AuthContext);
     const navigate = useNavigate();
     const axiosPublic = useAxiosPublic();
 
     const handleGoogleSignIn = async () => {
-       // console.log("Google Sign-In Clicked");
+        // console.log("Google Sign-In Clicked");
         // Implement Google sign-in logic here
 
         try {
-            const {user} =  await googleSignIn();
+            const { user } = await googleSignIn();
             const userData = {
-                name : user.displayName,
-                email : user.email
+                name: user.displayName,
+                email: user.email
             }
 
             await axiosPublic.post('/user', userData);
-           // console.log(data);
+            // console.log(data);
 
             navigate('/todo');
 
@@ -54,7 +54,7 @@ const SignIn = () => {
                     onClick={handleGoogleSignIn}
                     className="flex items-center justify-center gap-3 btn w-full bg-[#7B2CBF] text-white text-lg font-semibold rounded-lg shadow-md hover:bg-[#ff71a5] transition-all"
                 >
-                    <FcGoogle  className="text-2xl" />
+                    <FcGoogle className="text-2xl" />
                     Continue with Google
                 </button>
 
