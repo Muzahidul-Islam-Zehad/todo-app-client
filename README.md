@@ -2,7 +2,7 @@
 
 A **modern and intuitive task management application** that allows users to **add, edit, delete, and organize** their tasks in different categories (To-Do, In Progress, Done). TaskTrek provides a seamless **drag-and-drop** experience and ensures **real-time synchronization** across all devices.  
 
-## 🚀 **Live Demo**  
+## 🚀 **Live Site**  
 🔗 **[TaskTrek Live](https://tasktrek-todo-app.web.app/)**  
 
 ---
@@ -53,7 +53,7 @@ TaskTrek is built with the latest web technologies:
 ### **1️⃣ Clone the Repository**  
 
 ```sh
-git clone https://github.com/your-username/TaskTrek.git
+git clone https://github.com/Muzahidul-Islam-Zehad/TaskTrek.git
 cd TaskTrek
 ```
 
