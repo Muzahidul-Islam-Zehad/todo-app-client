@@ -1,23 +1,37 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../Providers/AuthProvider/AuthProvider";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 import LoadingSpinner from "../Components/LoadingSpinner/LoadingSpinner";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { MdDragIndicator } from "react-icons/md";
-import { FaCalendarAlt, FaTag, FaFire, FaTrash, FaEdit } from "react-icons/fa";
+import { FaCalendarAlt, FaTag, FaFire, FaTrash, FaEdit, FaHourglassStart } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { format } from "date-fns";
 
 const Home = () => {
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
     const queryClient = useQueryClient();
-    
+    const modalRef = useRef();
+    const [titleLen, setTitlelen] = useState(0);
+    const [desLen, setDeslen] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [taskID, setTaskID] = useState(null);
+
     const { data = [], isLoading } = useQuery({
         queryKey: ['tasks'],
         queryFn: async () => {
             const response = await axiosPublic.get(`/tasks?email=${user?.email}`);
             return response.data || [];
         }
+    });
+    const [task, setTask] = useState({
+        title: "",
+        description: "",
+        category: "To-Do",
+        dueDate: "",
+        priority: "Medium",
     });
 
     const [tasks, setTasks] = useState({
@@ -65,24 +79,96 @@ const Home = () => {
     };
 
     const handleDelete = async (taskId) => {
-        try {
-            await axiosPublic.delete(`/tasks/${taskId}`);
-            queryClient.invalidateQueries(['tasks']);
-        } catch (error) {
-            console.error("Error deleting task:", error);
-        }
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axiosPublic.delete(`/tasks/${taskId}`);
+                    queryClient.invalidateQueries(['tasks']);
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your task has been deleted.",
+                        icon: "success"
+                    });
+                } catch (error) {
+                    console.error("Error deleting task:", error);
+                }
+
+            }
+        });
+
     };
 
     const handleUpdate = (task) => {
         console.log("Update Task:", task);
         // Here, you can open a modal or navigate to an update page
+        modalRef.current?.showModal();
+
+        setTaskID(null);
+
+        setTask({
+            title: task?.title,
+            description: task?.description,
+            category: task?.category,
+            dueDate: task?.dueDate ? format(new Date(task.dueDate), "yyyy-MM-dd") : "",
+            priority: task.priority,
+        })
+        setTitlelen(task?.title.length);
+        setDeslen(task?.description.length);
+        setTaskID(task._id);
     };
+
+    const handleChange = async (e) => {
+        setTask({ ...task, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+        console.log('submit the form');
+
+        setLoading(true);
+        e.preventDefault();
+        const form = e.target;
+        const title = form.title.value;
+        const description = form.description.value;
+        const category = form.category.value;
+        const dueDate = format(new Date(form.dueDate.value), "PP");
+        const priority = form.priority.value;
+        const email = user?.email;
+
+
+        const updateTaskData = { title, description, category, dueDate, priority, email };
+
+
+        try {
+            await axiosPublic.patch(`/tasks/${taskID}`, updateTaskData);
+            queryClient.invalidateQueries(['tasks']);
+            modalRef.current?.close();
+            Swal.fire({
+                title: "Updated!",
+                text: "Your task has been updated.",
+                icon: "success"
+            });
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+        finally{
+            setLoading(false);
+        }
+    }
 
     return (
         <div className="w-11/12 mx-auto py-8">
             <h1 className="text-4xl font-bold text-purple-700 text-center mb-6">Task Board</h1>
             <DragDropContext onDragEnd={handleDragEnd}>
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Object.keys(tasks).map((category) => (
                         <Droppable key={category} droppableId={category}>
                             {(provided) => (
@@ -100,15 +186,13 @@ const Home = () => {
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
                                                     className={`relative bg-white p-5 rounded-lg shadow-md mb-4 border-l-4 transition-transform
-                                                    ${
-                                                        category === "To-Do"
+                                                    ${category === "To-Do"
                                                             ? "border-blue-500"
                                                             : category === "In Progress"
-                                                            ? "border-yellow-500"
-                                                            : "border-green-500"
-                                                    } ${
-                                                        snapshot.isDragging ? "scale-105 shadow-lg" : ""
-                                                    }`}
+                                                                ? "border-yellow-500"
+                                                                : "border-green-500"
+                                                        } ${snapshot.isDragging ? "scale-105 shadow-lg" : ""
+                                                        }`}
                                                 >
                                                     <div className="flex items-start gap-3">
                                                         <MdDragIndicator className="text-gray-500 text-xl cursor-grab mt-1" />
@@ -161,6 +245,94 @@ const Home = () => {
                     ))}
                 </div>
             </DragDropContext>
+
+
+
+            {/* Update task modal */}
+
+            {/* You can open the modal using document.getElementById('ID').showModal() method */}
+            <dialog ref={modalRef} className={`modal z-10`}>
+                <div className="modal-box">
+                    <button type="button" onClick={() => modalRef.current?.close()} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+
+                    <div className="mb-3">
+                        <h1 className="text-2xl md:text-3xl font-bold text-[#7B2CBF] text-center">
+                            Update Task
+                        </h1>
+                    </div>
+
+
+                    {/* form for update task */}
+                    <form onSubmit={handleSubmit} className="bg-[#E6E6FA] p-6 rounded-xl shadow-md">
+                        <label className="block text-[#7B2CBF] font-medium">Task Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            maxLength="50"
+                            value={task.title}
+                            onChange={(e) => { handleChange(e), setTitlelen(e.target.value.length) }}
+                            className="input w-full mt-1  bg-white border border-[#7B2CBF] focus:ring-2 focus:ring-[#007BFF]"
+                            placeholder="Enter task title"
+                            required
+                        />
+                        <p className="text-xs mt-1 text-right text-[#121212]">{titleLen}/50</p>
+
+                        <label className="block text-[#7B2CBF] font-medium">Description</label>
+                        <textarea
+                            name="description"
+                            maxLength="200"
+                            value={task.description}
+                            onChange={(e) => { handleChange(e), setDeslen(e.target.value.length) }}
+                            className="textarea w-full mt-1 bg-white border border-[#7B2CBF] focus:ring-2 focus:ring-[#007BFF]"
+                            placeholder="Enter task description"
+                        ></textarea>
+                        <p className="text-xs mt-1 text-right text-[#121212]">{desLen}/200</p>
+
+                        <label className="block text-[#7B2CBF] font-medium">Category</label>
+                        <select
+                            name="category"
+                            value={task.category}
+                            onChange={handleChange}
+                            className="select w-full mt-1 mb-3 bg-white border border-[#7B2CBF] focus:ring-2 focus:ring-[#007BFF]"
+                        >
+                            <option>To-Do</option>
+                            <option>In Progress</option>
+                            <option>Done</option>
+                        </select>
+
+                        <label className="block text-[#7B2CBF] font-medium">Due Date</label>
+                        <input
+                            type="date"
+                            name="dueDate"
+                            value={task.dueDate}
+                            onChange={handleChange}
+                            className="input w-full mt-1 mb-3 bg-white border border-[#7B2CBF] focus:ring-2 focus:ring-[#007BFF]"
+                        />
+
+                        <label className="block text-[#7B2CBF] font-medium">Priority</label>
+                        <select
+                            name="priority"
+                            value={task.priority}
+                            onChange={handleChange}
+                            className="select w-full mt-1 mb-3 bg-white border border-[#7B2CBF] focus:ring-2 focus:ring-[#007BFF]"
+                        >
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                        </select>
+
+                        {/* Submit Button */}
+                        <button type="submit" disabled={loading} className="w-full btn bg-[#007BFF]  text-white font-bold rounded-lg hover:bg-[#00A6FB] transition-all">
+                            {
+                                loading ? <span className={`animate-spin`}><FaHourglassStart /></span>
+                                    :
+                                    `Update Task`
+                            }
+
+                        </button>
+                    </form>
+                </div>
+            </dialog>
         </div>
     );
 };
