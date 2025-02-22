@@ -343,6 +343,7 @@ const Home = () => {
                         <label className="block text-[#7B2CBF] font-medium">Due Date</label>
                         <input
                             type="date"
+                            required
                             name="dueDate"
                             value={task.dueDate}
                             onChange={handleChange}
